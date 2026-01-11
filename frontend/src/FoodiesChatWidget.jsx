@@ -139,7 +139,7 @@ const FoodiesChatWidget = () => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-            className="fixed inset-0 z-50 flex flex-col h-[100dvh] w-full bg-white shadow-2xl rounded-none md:bottom-4 md:right-4 md:left-auto md:top-auto md:w-[400px] md:h-[600px] md:rounded-2xl md:inset-auto"
+            className="fixed inset-0 w-full h-[100dvh] flex flex-col z-[9999] bg-white shadow-2xl rounded-none md:bottom-4 md:right-4 md:left-auto md:top-auto md:w-[400px] md:h-[600px] md:rounded-2xl md:inset-auto"
           >
             {/* A. HEADER SECTION (Flex-None: Prevents shrinking/scrolling) */}
             <div className="flex-none bg-[#111827] p-4 md:p-5 text-white shadow-md z-10">
@@ -244,23 +244,28 @@ const FoodiesChatWidget = () => {
             {/* C. INPUT SECTION (Flex-None: Pinned to bottom) */}
             <div className="flex-none bg-white p-3 md:p-4 border-t border-gray-200 pb-safe">
               <form onSubmit={handleSubmit}>
-                <div className="flex items-center space-x-2 md:space-x-3">
+                <div className="flex items-center space-x-2">
                   <input
                     type="text"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     placeholder="Type your message..."
-                    className="flex-1 px-4 py-3 md:px-6 md:py-4 text-sm md:text-base rounded-full border-2 border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#FFCC66] focus:border-transparent transition-all placeholder:text-gray-400"
+                    className="flex-1 bg-gray-100 px-4 py-3 text-sm md:text-base rounded-full focus:outline-none focus:ring-2 focus:ring-[#FFCC66] transition-all placeholder:text-gray-400"
                     disabled={isLoading}
                   />
-                  <button
-                    type="submit"
-                    disabled={isLoading || !input.trim()}
-                    className="bg-[#FFCC66] text-[#111827] p-3 md:p-4 rounded-full hover:bg-yellow-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl transform hover:scale-105 font-bold"
-                  >
-                    <Send size={20} className="md:hidden" />
-                    <Send size={22} className="hidden md:block" />
-                  </button>
+                  {input.trim().length > 0 && (
+                    <motion.button
+                      type="submit"
+                      disabled={isLoading}
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0, opacity: 0 }}
+                      transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                      className="bg-[#FFCC66] text-[#111827] p-3 rounded-full hover:bg-yellow-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+                    >
+                      <Send size={20} />
+                    </motion.button>
+                  )}
                 </div>
               </form>
             </div>
