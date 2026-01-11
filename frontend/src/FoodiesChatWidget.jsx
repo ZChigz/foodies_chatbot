@@ -124,7 +124,7 @@ const FoodiesChatWidget = () => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-            className="fixed z-50 bg-white shadow-2xl transition-all duration-300 inset-0 w-full h-full rounded-none md:bottom-5 md:right-5 md:w-[400px] md:h-[600px] md:rounded-2xl flex flex-col overflow-hidden"
+            className="fixed z-50 bg-white shadow-2xl flex flex-col overflow-hidden inset-0 w-full h-[100dvh] rounded-none md:bottom-4 md:right-4 md:left-auto md:top-auto md:w-[400px] md:h-[600px] md:rounded-2xl"
           >
             {/* Header - Dark with Yellow FOODIES text */}
             <div className="bg-gray-900 p-4 md:p-5 shadow-lg">
