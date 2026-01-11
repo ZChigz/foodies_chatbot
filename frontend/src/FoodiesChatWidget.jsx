@@ -124,10 +124,10 @@ const FoodiesChatWidget = () => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-            className="fixed z-50 bg-white shadow-2xl flex flex-col overflow-hidden inset-0 w-full h-[100dvh] rounded-none md:bottom-4 md:right-4 md:left-auto md:top-auto md:w-[400px] md:h-[600px] md:rounded-2xl"
+            className="fixed z-50 bg-white shadow-2xl flex flex-col inset-0 w-full h-[100dvh] rounded-none md:bottom-4 md:right-4 md:left-auto md:top-auto md:w-[400px] md:h-[600px] md:rounded-2xl"
           >
-            {/* Header - Dark with Yellow FOODIES text - Fixed to top */}
-            <div className="flex-none bg-gray-900 p-4 md:p-5 shadow-lg">
+            {/* Header - Rigid, never scrolls */}
+            <div className="flex-none bg-gray-900 p-4 md:p-5 shadow-lg z-10">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 md:w-12 md:h-12 bg-yellow-400 rounded-full flex items-center justify-center shadow-md">
@@ -147,8 +147,8 @@ const FoodiesChatWidget = () => {
               </div>
             </div>
 
-            {/* Messages - Clean warm grey background */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[#F9FAFB]">
+            {/* Messages - ONLY scrollable section */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[#F9FAFB] overscroll-contain">
               {messages.map((message) => (
                 <motion.div
                   key={message.id}
@@ -224,8 +224,8 @@ const FoodiesChatWidget = () => {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Input - Pinned to bottom */}
-            <form onSubmit={handleSubmit} className="flex-none p-3 md:p-4 bg-white border-t border-gray-200 pb-safe">
+            {/* Input - Rigid, pinned to bottom */}
+            <form onSubmit={handleSubmit} className="flex-none p-3 md:p-4 bg-white border-t border-gray-200 z-10">
               <div className="flex items-center space-x-2 md:space-x-3">
                 <input
                   type="text"
