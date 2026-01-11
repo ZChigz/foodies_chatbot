@@ -1,8 +1,8 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+import os
 from openai import OpenAI
 from dotenv import load_dotenv
-import os
 import time
 
 # Load environment variables
@@ -12,9 +12,9 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app)
 
-# Initialize OpenAI client with v2 beta header
+# Initialize with strict V2 headers
 client = OpenAI(
-    api_key=os.getenv('OPENAI_API_KEY'),
+    api_key=os.getenv("OPENAI_API_KEY"),
     default_headers={"OpenAI-Beta": "assistants=v2"}
 )
 
