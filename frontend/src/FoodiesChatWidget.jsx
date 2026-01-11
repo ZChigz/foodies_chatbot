@@ -116,7 +116,7 @@ const FoodiesChatWidget = () => {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
+    <>
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -124,18 +124,18 @@ const FoodiesChatWidget = () => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-            className="mb-4 w-[450px] h-[600px] bg-white rounded-3xl shadow-2xl flex flex-col overflow-hidden"
+            className="fixed z-50 bg-white shadow-2xl transition-all duration-300 inset-0 w-full h-full rounded-none md:bottom-5 md:right-5 md:w-[400px] md:h-[600px] md:rounded-2xl flex flex-col overflow-hidden"
           >
             {/* Header - Dark with Yellow FOODIES text */}
-            <div className="bg-gray-900 p-5 shadow-lg">
+            <div className="bg-gray-900 p-4 md:p-5 shadow-lg">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-yellow-400 rounded-full flex items-center justify-center shadow-md">
-                    <span className="text-2xl font-bold text-gray-900">F</span>
+                  <div className="w-10 h-10 md:w-12 md:h-12 bg-yellow-400 rounded-full flex items-center justify-center shadow-md">
+                    <span className="text-xl md:text-2xl font-bold text-gray-900">F</span>
                   </div>
                   <div>
-                    <h3 className="text-yellow-400 font-bold text-xl tracking-wide">FOODIES</h3>
-                    <p className="text-gray-400 text-sm">Virtual Customer Support</p>
+                    <h3 className="text-yellow-400 font-bold text-lg md:text-xl tracking-wide">FOODIES</h3>
+                    <p className="text-gray-400 text-xs md:text-sm">Virtual Customer Support</p>
                   </div>
                 </div>
                 <button
@@ -225,22 +225,23 @@ const FoodiesChatWidget = () => {
             </div>
 
             {/* Input - Large rounded field with yellow send button */}
-            <form onSubmit={handleSubmit} className="p-4 bg-white border-t border-gray-200">
-              <div className="flex items-center space-x-3">
+            <form onSubmit={handleSubmit} className="p-3 md:p-4 bg-white border-t border-gray-200">
+              <div className="flex items-center space-x-2 md:space-x-3">
                 <input
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Type your message..."
-                  className="flex-1 px-6 py-4 text-base rounded-full border-2 border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#FFCC66] focus:border-transparent transition-all placeholder:text-gray-400"
+                  className="flex-1 px-4 py-3 md:px-6 md:py-4 text-sm md:text-base rounded-full border-2 border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#FFCC66] focus:border-transparent transition-all placeholder:text-gray-400"
                   disabled={isLoading}
                 />
                 <button
                   type="submit"
                   disabled={isLoading || !input.trim()}
-                  className="bg-[#FFCC66] text-[#111827] p-4 rounded-full hover:bg-yellow-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl transform hover:scale-105 font-bold"
+                  className="bg-[#FFCC66] text-[#111827] p-3 md:p-4 rounded-full hover:bg-yellow-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl transform hover:scale-105 font-bold"
                 >
-                  <Send size={22} />
+                  <Send size={20} className="md:hidden" />
+                  <Send size={22} className="hidden md:block" />
                 </button>
               </div>
             </form>
@@ -251,7 +252,7 @@ const FoodiesChatWidget = () => {
       {/* Launcher Button - Yellow with black icon */}
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="bg-[#FFCC66] text-[#111827] p-4 rounded-full shadow-2xl hover:shadow-yellow-400/50 transition-all hover:bg-yellow-500"
+        className="fixed bottom-6 right-6 z-50 bg-[#FFCC66] text-[#111827] p-4 rounded-full shadow-2xl hover:shadow-yellow-400/50 transition-all hover:bg-yellow-500"
         whileHover={{ scale: 1.1, rotate: 5 }}
         whileTap={{ scale: 0.95 }}
         animate={!isOpen ? { y: [0, -10, 0] } : {}}
@@ -259,7 +260,7 @@ const FoodiesChatWidget = () => {
       >
         {isOpen ? <X size={28} /> : <MessageCircle size={28} />}
       </motion.button>
-    </div>
+    </>
   );
 };
 
