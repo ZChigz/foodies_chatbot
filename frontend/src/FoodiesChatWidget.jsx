@@ -71,14 +71,15 @@ const FoodiesChatWidget = () => {
         content: textToSend
       });
 
-      const response = await fetch('http://localhost:5000/api/chat', {
+      const response = await fetch('https://foodies-chatbot.onrender.com/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ 
           messages: conversationHistory
-        })
+        }),
+        signal: AbortSignal.timeout(60000) // 60 second timeout for cold starts
       });
 
       if (!response.ok) {
@@ -102,7 +103,9 @@ const FoodiesChatWidget = () => {
       console.error('Chat error:', error);
       const errorMessage = {
         id: Date.now() + 1,
-        text: 'Oops! Something went wrong. Please try again.',
+        text: error.name === 'TimeoutError' 
+          ? 'The server is waking up (this happens on free hosting). Please try again in a moment! 😊'
+          : 'Oops! Something went wrong. Please try again.',
         sender: 'bot',
         timestamp: new Date()
       };
