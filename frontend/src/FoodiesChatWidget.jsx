@@ -126,8 +126,8 @@ const FoodiesChatWidget = () => {
             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
             className="fixed z-50 bg-white shadow-2xl flex flex-col overflow-hidden inset-0 w-full h-[100dvh] rounded-none md:bottom-4 md:right-4 md:left-auto md:top-auto md:w-[400px] md:h-[600px] md:rounded-2xl"
           >
-            {/* Header - Dark with Yellow FOODIES text */}
-            <div className="bg-gray-900 p-4 md:p-5 shadow-lg">
+            {/* Header - Dark with Yellow FOODIES text - Fixed to top */}
+            <div className="flex-none bg-gray-900 p-4 md:p-5 shadow-lg">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 md:w-12 md:h-12 bg-yellow-400 rounded-full flex items-center justify-center shadow-md">
@@ -224,8 +224,8 @@ const FoodiesChatWidget = () => {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Input - Large rounded field with yellow send button */}
-            <form onSubmit={handleSubmit} className="p-3 md:p-4 bg-white border-t border-gray-200">
+            {/* Input - Pinned to bottom */}
+            <form onSubmit={handleSubmit} className="flex-none p-3 md:p-4 bg-white border-t border-gray-200 pb-safe">
               <div className="flex items-center space-x-2 md:space-x-3">
                 <input
                   type="text"
@@ -249,17 +249,19 @@ const FoodiesChatWidget = () => {
         )}
       </AnimatePresence>
 
-      {/* Launcher Button - Yellow with black icon */}
-      <motion.button
-        onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-50 bg-[#FFCC66] text-[#111827] p-4 rounded-full shadow-2xl hover:shadow-yellow-400/50 transition-all hover:bg-yellow-500"
-        whileHover={{ scale: 1.1, rotate: 5 }}
-        whileTap={{ scale: 0.95 }}
-        animate={!isOpen ? { y: [0, -10, 0] } : {}}
-        transition={!isOpen ? { duration: 2, repeat: Infinity, repeatDelay: 3 } : {}}
-      >
-        {isOpen ? <X size={28} /> : <MessageCircle size={28} />}
-      </motion.button>
+      {/* Launcher Button - Hidden when chat is open */}
+      {!isOpen && (
+        <motion.button
+          onClick={() => setIsOpen(true)}
+          className="fixed bottom-6 right-6 z-50 bg-[#FFCC66] text-[#111827] p-4 rounded-full shadow-2xl hover:shadow-yellow-400/50 transition-all hover:bg-yellow-500"
+          whileHover={{ scale: 1.1, rotate: 5 }}
+          whileTap={{ scale: 0.95 }}
+          animate={{ y: [0, -10, 0] }}
+          transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+        >
+          <MessageCircle size={28} />
+        </motion.button>
+      )}
     </>
   );
 };
