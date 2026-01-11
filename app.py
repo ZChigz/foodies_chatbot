@@ -12,8 +12,11 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app)
 
-# Initialize OpenAI client
-client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+# Initialize OpenAI client with v2 beta header
+client = OpenAI(
+    api_key=os.getenv('OPENAI_API_KEY'),
+    default_headers={"OpenAI-Beta": "assistants=v2"}
+)
 
 # Assistant ID
 ASSISTANT_ID = os.getenv('ASSISTANT_ID')
