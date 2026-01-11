@@ -45,6 +45,16 @@ def preprocess_markdown(text):
     
     return text.strip()
 
+@app.route('/', methods=['GET'])
+def health_check():
+    """Health check endpoint"""
+    return jsonify({
+        "status": "ok",
+        "message": "Foodies Chatbot API is running",
+        "has_openai_key": bool(os.getenv('OPENAI_API_KEY')),
+        "has_assistant_id": bool(os.getenv('ASSISTANT_ID'))
+    })
+
 @app.route('/api/chat', methods=['POST'])
 def chat():
     try:
@@ -119,6 +129,7 @@ def chat():
             }), 500
     
     except Exception as e:
+        print(f"Error in /api/chat: {str(e)}")  # Log to Render console
         return jsonify({
             "success": False,
             "error": str(e)
