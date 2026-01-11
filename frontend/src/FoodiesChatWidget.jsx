@@ -79,7 +79,7 @@ const FoodiesChatWidget = () => {
         body: JSON.stringify({ 
           messages: conversationHistory
         }),
-        signal: AbortSignal.timeout(60000) // 60 second timeout for cold starts
+        signal: AbortSignal.timeout(60000) // 60 second timeout for cold starts on Render
       });
 
       if (!response.ok) {
