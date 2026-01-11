@@ -117,17 +117,32 @@ const FoodiesChatWidget = () => {
 
   return (
     <>
-      <AnimatePresence>
-        {isOpen && (
+      {/* 1. FLOATING TOGGLE BUTTON (Only visible when chat is CLOSED) */}
+      {!isOpen && (
+        <motion.button
+          onClick={() => setIsOpen(true)}
+          className="fixed bottom-6 right-6 z-50 bg-[#FFCC66] text-[#111827] p-4 rounded-full shadow-2xl hover:shadow-yellow-400/50 transition-all hover:bg-yellow-500"
+          whileHover={{ scale: 1.1, rotate: 5 }}
+          whileTap={{ scale: 0.95 }}
+          animate={{ y: [0, -10, 0] }}
+          transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+        >
+          <MessageCircle size={28} />
+        </motion.button>
+      )}
+
+      {/* 2. MAIN CHAT CONTAINER (Visible when chat is OPEN) */}
+      {isOpen && (
+        <AnimatePresence>
           <motion.div
             initial={{ opacity: 0, scale: 0.8, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-            className="fixed z-50 bg-white shadow-2xl flex flex-col inset-0 w-full h-[100dvh] rounded-none md:bottom-4 md:right-4 md:left-auto md:top-auto md:w-[400px] md:h-[600px] md:rounded-2xl"
+            className="fixed inset-0 z-50 flex flex-col h-[100dvh] w-full bg-white shadow-2xl rounded-none md:bottom-4 md:right-4 md:left-auto md:top-auto md:w-[400px] md:h-[600px] md:rounded-2xl md:inset-auto"
           >
-            {/* Header - Rigid, never scrolls */}
-            <div className="flex-none bg-gray-900 p-4 md:p-5 shadow-lg z-10">
+            {/* A. HEADER SECTION (Flex-None: Prevents shrinking/scrolling) */}
+            <div className="flex-none bg-[#111827] p-4 md:p-5 text-white shadow-md z-10">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 md:w-12 md:h-12 bg-yellow-400 rounded-full flex items-center justify-center shadow-md">
@@ -147,120 +162,110 @@ const FoodiesChatWidget = () => {
               </div>
             </div>
 
-            {/* Messages - ONLY scrollable section */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[#F9FAFB] overscroll-contain">
-              {messages.map((message) => (
-                <motion.div
-                  key={message.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-                >
-                  {message.sender === 'bot' && (
+            {/* B. MESSAGES BODY (Flex-1: Takes all available space & Scrolls) */}
+            <div className="flex-1 overflow-y-auto p-4 bg-gray-50 scroll-smooth">
+              <div className="space-y-4">
+                {messages.map((message) => (
+                  <motion.div
+                    key={message.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                  >
+                    {message.sender === 'bot' && (
+                      <div className="w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center mr-2 flex-shrink-0 shadow-md">
+                        <span className="text-gray-900 font-bold text-sm">F</span>
+                      </div>
+                    )}
+                    <div className="flex flex-col">
+                      <div
+                        className={`${message.sender === 'user' ? 'max-w-[75%]' : 'max-w-[90%]'} px-5 py-3 rounded-2xl ${
+                          message.sender === 'user'
+                            ? 'bg-[#FFCC66] text-[#111827] shadow-md rounded-br-sm'
+                            : 'bg-white text-gray-700 shadow-sm rounded-bl-sm'
+                        }`}
+                      >
+                        {message.sender === 'bot' ? (
+                          <div className="text-sm md:text-base leading-snug">
+                            <MarkdownMessage content={message.text} />
+                          </div>
+                        ) : (
+                          <p className="text-sm md:text-base leading-snug font-medium">{message.text}</p>
+                        )}
+                      </div>
+                      
+                      {/* Quick Reply Buttons */}
+                      {message.sender === 'bot' && message.options && (
+                        <QuickReplyActions 
+                          options={message.options} 
+                          onSelect={handleQuickReply}
+                        />
+                      )}
+                    </div>
+                  </motion.div>
+                ))}
+
+                {/* Typing Indicator */}
+                {isLoading && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="flex justify-start"
+                  >
                     <div className="w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center mr-2 flex-shrink-0 shadow-md">
                       <span className="text-gray-900 font-bold text-sm">F</span>
                     </div>
-                  )}
-                  <div className="flex flex-col">
-                    <div
-                      className={`${message.sender === 'user' ? 'max-w-[75%]' : 'max-w-[90%]'} px-5 py-3 rounded-2xl ${
-                        message.sender === 'user'
-                          ? 'bg-[#FFCC66] text-[#111827] shadow-md rounded-br-sm'
-                          : 'bg-white text-gray-700 shadow-sm rounded-bl-sm'
-                      }`}
-                    >
-                      {message.sender === 'bot' ? (
-                        <div className="text-sm md:text-base leading-snug">
-                          <MarkdownMessage content={message.text} />
-                        </div>
-                      ) : (
-                        <p className="text-sm md:text-base leading-snug font-medium">{message.text}</p>
-                      )}
+                    <div className="bg-white px-5 py-3 rounded-2xl rounded-bl-sm shadow-sm">
+                      <div className="flex space-x-2">
+                        <motion.div
+                          animate={{ scale: [1, 1.2, 1] }}
+                          transition={{ duration: 0.6, repeat: Infinity, delay: 0 }}
+                          className="w-2 h-2 bg-yellow-400 rounded-full"
+                        />
+                        <motion.div
+                          animate={{ scale: [1, 1.2, 1] }}
+                          transition={{ duration: 0.6, repeat: Infinity, delay: 0.2 }}
+                          className="w-2 h-2 bg-yellow-400 rounded-full"
+                        />
+                        <motion.div
+                          animate={{ scale: [1, 1.2, 1] }}
+                          transition={{ duration: 0.6, repeat: Infinity, delay: 0.4 }}
+                          className="w-2 h-2 bg-yellow-400 rounded-full"
+                        />
+                      </div>
                     </div>
-                    
-                    {/* Quick Reply Buttons */}
-                    {message.sender === 'bot' && message.options && (
-                      <QuickReplyActions 
-                        options={message.options} 
-                        onSelect={handleQuickReply}
-                      />
-                    )}
-                  </div>
-                </motion.div>
-              ))}
-
-              {/* Typing Indicator */}
-              {isLoading && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="flex justify-start"
-                >
-                  <div className="w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center mr-2 flex-shrink-0 shadow-md">
-                    <span className="text-gray-900 font-bold text-sm">F</span>
-                  </div>
-                  <div className="bg-white px-5 py-3 rounded-2xl rounded-bl-sm shadow-sm">
-                    <div className="flex space-x-2">
-                      <motion.div
-                        animate={{ scale: [1, 1.2, 1] }}
-                        transition={{ duration: 0.6, repeat: Infinity, delay: 0 }}
-                        className="w-2 h-2 bg-yellow-400 rounded-full"
-                      />
-                      <motion.div
-                        animate={{ scale: [1, 1.2, 1] }}
-                        transition={{ duration: 0.6, repeat: Infinity, delay: 0.2 }}
-                        className="w-2 h-2 bg-yellow-400 rounded-full"
-                      />
-                      <motion.div
-                        animate={{ scale: [1, 1.2, 1] }}
-                        transition={{ duration: 0.6, repeat: Infinity, delay: 0.4 }}
-                        className="w-2 h-2 bg-yellow-400 rounded-full"
-                      />
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-              <div ref={messagesEndRef} />
+                  </motion.div>
+                )}
+                <div ref={messagesEndRef} />
+              </div>
             </div>
 
-            {/* Input - Rigid, pinned to bottom */}
-            <form onSubmit={handleSubmit} className="flex-none p-3 md:p-4 bg-white border-t border-gray-200 z-10">
-              <div className="flex items-center space-x-2 md:space-x-3">
-                <input
-                  type="text"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  placeholder="Type your message..."
-                  className="flex-1 px-4 py-3 md:px-6 md:py-4 text-sm md:text-base rounded-full border-2 border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#FFCC66] focus:border-transparent transition-all placeholder:text-gray-400"
-                  disabled={isLoading}
-                />
-                <button
-                  type="submit"
-                  disabled={isLoading || !input.trim()}
-                  className="bg-[#FFCC66] text-[#111827] p-3 md:p-4 rounded-full hover:bg-yellow-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl transform hover:scale-105 font-bold"
-                >
-                  <Send size={20} className="md:hidden" />
-                  <Send size={22} className="hidden md:block" />
-                </button>
-              </div>
-            </form>
+            {/* C. INPUT SECTION (Flex-None: Pinned to bottom) */}
+            <div className="flex-none bg-white p-3 md:p-4 border-t border-gray-200 pb-safe">
+              <form onSubmit={handleSubmit}>
+                <div className="flex items-center space-x-2 md:space-x-3">
+                  <input
+                    type="text"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    placeholder="Type your message..."
+                    className="flex-1 px-4 py-3 md:px-6 md:py-4 text-sm md:text-base rounded-full border-2 border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#FFCC66] focus:border-transparent transition-all placeholder:text-gray-400"
+                    disabled={isLoading}
+                  />
+                  <button
+                    type="submit"
+                    disabled={isLoading || !input.trim()}
+                    className="bg-[#FFCC66] text-[#111827] p-3 md:p-4 rounded-full hover:bg-yellow-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl transform hover:scale-105 font-bold"
+                  >
+                    <Send size={20} className="md:hidden" />
+                    <Send size={22} className="hidden md:block" />
+                  </button>
+                </div>
+              </form>
+            </div>
           </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Launcher Button - Hidden when chat is open */}
-      {!isOpen && (
-        <motion.button
-          onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 z-50 bg-[#FFCC66] text-[#111827] p-4 rounded-full shadow-2xl hover:shadow-yellow-400/50 transition-all hover:bg-yellow-500"
-          whileHover={{ scale: 1.1, rotate: 5 }}
-          whileTap={{ scale: 0.95 }}
-          animate={{ y: [0, -10, 0] }}
-          transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-        >
-          <MessageCircle size={28} />
-        </motion.button>
+        </AnimatePresence>
       )}
     </>
   );
